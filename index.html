@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Know Your Limit!</title>
+    <link rel="stylesheet" href="sass/css/style.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="display-4 text-center mt-5">Know Your <span class="text-danger">MAX!</span></h1>
+        <form id="form">
+            <div class="form-group">
+                    <label for="muscleGroup">Partia mięśniowa</label>
+                    <input type="text" class="form-control" id="muscleGroup" aria-describedby="muscleGroupHelp" placeholder="Nazwa partii mięśniowej" required>
+                    <!-- <small id="exerciseNameHelp" class="form-text text-muted">Wpisz nazwę lub krótko opisz wykonywane ćwiczenie</small> -->
+                </div>
+            <div class="form-group">
+                <label for="exerciseName">Nazwa ćwiczenia</label>
+                <input type="text" class="form-control" id="exerciseName" aria-describedby="exerciseNameHelp" placeholder="Wpisz nazwę ćwiczenia" required>
+                <!-- <small id="exerciseNameHelp" class="form-text text-muted">Wpisz nazwę lub krótko opisz wykonywane ćwiczenie</small> -->
+            </div>
+            <div class="form-group">
+                <label for="repsNumber">Ile powtórzeń wykonałeś?</label>
+                <input type="number" class="form-control" id="repsNumber" aria-describedby="repsNumberHelp" placeholder="Ilość powtórzeń" required>
+                <small id="repsNumberHelp" class="form-text text-muted">Ile wykonałeś powtórzeń powyzszego ćwiczenia podczas ostatniej serii?</small>
+            </div>
+            <div class="form-group">
+                <label for="maxWeight">Waga obciązenia</label>
+                <input type="number" class="form-control" id="maxWeight" aria-describedby="maxWeightHelp" placeholder="Waga" required>
+                <small id="maxWeightHelp" class="form-text text-muted">Ile wynisiła waga obciązenia podczas ostatniej serii</small>
+            </div>
+            <button type="submit" class="btn btn-success">Dodaj</button>
+        </form>
+        <table class="table table-hover mt-5">
+            <thead>
+                <tr>
+                <th scope="col">Partia</th>
+                <th scope="col">Nazwa ćwiczenia</th>
+                <th scope="col">Liczba powtórzeń</th>
+                <th scope="col">Waga</th>
+                </tr>
+            </thead>
+            <tbody id="exercises-list">
+            </tbody>
+        </table> 
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
