@@ -23,20 +23,18 @@ class Data {
 
     static displayData() {
         exerciseDataRef.on('value', gotData);
-
         function gotData(data) {
             let exerciseRecord = data.val();
-            // let keys = Object.keys(exerciseRecord);//tu
-            // console.log(keys);
+            let keys = Object.keys(exerciseRecord);//tu
             var values = Object.values(exerciseRecord);
-            // console.log(values);
+            const list = document.querySelector('#exercises-list');//ogarnac do globala?
+            list.innerHTML = "";
             values.forEach((oldExercise) => Data.addExercise(oldExercise));
-            
-            // singleRow.forEach((oldExercise,i)=>{
-            //     // console.log(oldExercise, keys[i]);
-            //     Data.addExercise(oldExercise);
-            //     // oldExercise.setAttribute('data-key', keys[i])
-            // })
+            //dodawanie id
+            let allExercises = document.querySelectorAll('tbody tr');
+            allExercises.forEach((item,i) => {
+                item.classList.add(keys[i]);
+            })   
         }
     }
     static addExercise(exercise) {
@@ -48,12 +46,11 @@ class Data {
             <td>${exercise.exerciseName}</td>
             <td>${exercise.repsNumber}</td>
             <td contenteditable='true'>${exercise.maxWeight}</td>
-            <td><button type="button" class="btn-xs btn-danger">X</button></td>
+            <td><button type="button" class="btn-xs btn-danger remove">X</button></td>
             <td><button type="button" class="btn-xs btn-info">Edit</button></td>
         `;
         list.appendChild(exerciseRow);
     }
-
     static clearFields(){ 
         form.reset();
     }
@@ -71,12 +68,24 @@ class Data {
         list.innerHTML="";
         sendFormData();
     }
+    static removeData(e){
+        let IdToBeRemoved = e.target.parentNode.parentNode.className;
+        exerciseDataRef.child(IdToBeRemoved).remove();
+    }
 }
+document.querySelector('tbody').addEventListener('click', (e)=> {
+    const removeButtons = document.querySelectorAll('.remove');
+        removeButtons.forEach((singleButton) => {
+            if(e.target == singleButton) {
+                // let itemToBeRemoved = e.target.parentNode.parentNode;
+                // itemToBeRemoved.parentNode.removeChild(itemToBeRemoved);
+                Data.removeData(e);
+            }
+        })
+})
 document.addEventListener('DOMContentLoaded', Data.displayData);
-
 document.querySelector('#form').addEventListener('submit', (e)=> {
     e.preventDefault();
-
     const muscleGroup = document.querySelector('#muscleGroup').value;
     const exerciseName = document.querySelector('#exerciseName').value;
     const repsNumber = document.querySelector('#repsNumber').value;
@@ -88,3 +97,4 @@ document.querySelector('#form').addEventListener('submit', (e)=> {
     Data.submitForm(muscleGroup,exerciseName,repsNumber,maxWeight);
     Data.clearFields();
 })
+
