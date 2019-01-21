@@ -20,21 +20,26 @@ class Exercise  {
     }
 }
 class Data {
-
     static displayData() {
         exerciseDataRef.on('value', gotData);
         function gotData(data) {
             let exerciseRecord = data.val();
-            let keys = Object.keys(exerciseRecord);//tu
-            var values = Object.values(exerciseRecord);
-            const list = document.querySelector('#exercises-list');//ogarnac do globala?
-            list.innerHTML = "";
-            values.forEach((oldExercise) => Data.addExercise(oldExercise));
-            //dodawanie id
-            let allExercises = document.querySelectorAll('tbody tr');
-            allExercises.forEach((item,i) => {
-                item.classList.add(keys[i]);
-            })   
+            const list = document.querySelector('#exercises-list');//ogarnac 
+            if(exerciseRecord == null) {
+                alert('W bazie nie ma juz nic!');
+                list.innerHTML = "";
+            } else {
+                let keys = Object.keys(exerciseRecord);
+                var values = Object.values(exerciseRecord);
+                // const list = document.querySelector('#exercises-list');//ogarnac do globala?
+                list.innerHTML = "";
+                values.forEach((oldExercise) => Data.addExercise(oldExercise));
+                //dodawanie id
+                let allExercises = document.querySelectorAll('tbody tr');
+                allExercises.forEach((item,i) => {
+                    item.classList.add(keys[i]);
+                }) 
+            }  
         }
     }
     static addExercise(exercise) {
@@ -45,9 +50,9 @@ class Data {
             <td>${exercise.muscleGroup}</td>
             <td>${exercise.exerciseName}</td>
             <td>${exercise.repsNumber}</td>
-            <td contenteditable='true'>${exercise.maxWeight}</td>
+            <td contenteditable='true' class="editable">${exercise.maxWeight}</td>
             <td><button type="button" class="btn-xs btn-danger remove">X</button></td>
-            <td><button type="button" class="btn-xs btn-info">Edit</button></td>
+            <td><button type="button" class="btn-xs btn-info edit">Edit</button></td>
         `;
         list.appendChild(exerciseRow);
     }
@@ -72,17 +77,14 @@ class Data {
         let IdToBeRemoved = e.target.parentNode.parentNode.className;
         exerciseDataRef.child(IdToBeRemoved).remove();
     }
+    static updateDb(e){
+        let clickedId = e.target.parentNode.parentNode.className;
+        let maxWeight = document.querySelector(`.${clickedId}` +" " + ".editable").textContent;
+        let data = {maxWeight};
+        console.log(data);
+        exerciseDataRef.child(clickedId).update(data);
+    }
 }
-document.querySelector('tbody').addEventListener('click', (e)=> {
-    const removeButtons = document.querySelectorAll('.remove');
-        removeButtons.forEach((singleButton) => {
-            if(e.target == singleButton) {
-                // let itemToBeRemoved = e.target.parentNode.parentNode;
-                // itemToBeRemoved.parentNode.removeChild(itemToBeRemoved);
-                Data.removeData(e);
-            }
-        })
-})
 document.addEventListener('DOMContentLoaded', Data.displayData);
 document.querySelector('#form').addEventListener('submit', (e)=> {
     e.preventDefault();
@@ -97,4 +99,25 @@ document.querySelector('#form').addEventListener('submit', (e)=> {
     Data.submitForm(muscleGroup,exerciseName,repsNumber,maxWeight);
     Data.clearFields();
 })
-
+document.querySelector('tbody').addEventListener('click', (e)=> {
+    const removeButtons = document.querySelectorAll('.remove');
+        removeButtons.forEach((singleButton) => {
+            if(e.target == singleButton) {
+                Data.removeData(e);
+            }
+        })
+    const editButtons = document.querySelectorAll('.btn-info');
+        editButtons.forEach((editButton)=> {
+            if(e.target == editButton) {
+                Data.updateDb(e);
+        }
+    })
+    // const editableFields = document.querySelectorAll('.editable');
+    // editableFields.forEach((singleField) => { //tu
+    //     if(e.target == singleField) {
+    //         singleField.addEventListener('click', ()=> {
+                
+    //         })
+    //     }
+    // })
+})
