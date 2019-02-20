@@ -1,3 +1,9 @@
+.alert-dismissible {
+  display: none;
+}
 
+.visible {
+  display: block;
+}
 
 /*# sourceMappingURL=style.css.map */

@@ -24,17 +24,15 @@ class Data {
         exerciseDataRef.on('value', gotData);
         function gotData(data) {
             let exerciseRecord = data.val();
-            const list = document.querySelector('#exercises-list');//ogarnac 
+            const list = document.querySelector('#exercises-list');
             if(exerciseRecord == null) {
-                alert('W bazie nie ma juz nic!');
                 list.innerHTML = "";
             } else {
                 let keys = Object.keys(exerciseRecord);
                 var values = Object.values(exerciseRecord);
-                // const list = document.querySelector('#exercises-list');//ogarnac do globala?
                 list.innerHTML = "";
                 values.forEach((oldExercise) => Data.addExercise(oldExercise));
-                //dodawanie id
+
                 let allExercises = document.querySelectorAll('tbody tr');
                 allExercises.forEach((item,i) => {
                     item.classList.add(keys[i]);
@@ -61,8 +59,8 @@ class Data {
     }
     static submitForm(muscleGroup,exerciseName,repsNumber,maxWeight){
         function sendFormData(){
-            let newExerciseDataRef = exerciseDataRef.push();
-                newExerciseDataRef.set({
+            let ExerciseDataRef = exerciseDataRef.push();
+                ExerciseDataRef.set({
                     muscleGroup,
                     exerciseName,
                     repsNumber,
@@ -72,6 +70,21 @@ class Data {
         const list = document.querySelector('#exercises-list');
         list.innerHTML="";
         sendFormData();
+        Data.showSuccessNotification();
+    }
+    static showSuccessNotification(){
+        let successNotificationBox = document.querySelector('.alert-success');
+        successNotificationBox.classList.add('visible');
+        setTimeout(function(){
+            successNotificationBox.classList.remove('visible');
+        }, 3000)
+    }
+    static showDeleteNotification(){
+        let deleteNotificationBox = document.querySelector('.alert-danger');
+        deleteNotificationBox.classList.add('visible');
+        setTimeout(function(){
+            deleteNotificationBox.classList.remove('visible');
+        }, 3000)
     }
     static removeData(e){
         let IdToBeRemoved = e.target.parentNode.parentNode.className;
@@ -81,7 +94,6 @@ class Data {
         let clickedId = e.target.parentNode.parentNode.className;
         let maxWeight = document.querySelector(`.${clickedId}` +" " + ".editable").textContent;
         let data = {maxWeight};
-        console.log(data);
         exerciseDataRef.child(clickedId).update(data);
     }
 }
@@ -94,8 +106,8 @@ document.querySelector('#form').addEventListener('submit', (e)=> {
     const maxWeight = document.querySelector('#maxWeight').value;
 
     // const newExercise = new Exercise (muscleGroup, exerciseName, repsNumber, maxWeight);
-
     // Data.addExercise(newExercise);
+
     Data.submitForm(muscleGroup,exerciseName,repsNumber,maxWeight);
     Data.clearFields();
 })
@@ -104,6 +116,7 @@ document.querySelector('tbody').addEventListener('click', (e)=> {
         removeButtons.forEach((singleButton) => {
             if(e.target == singleButton) {
                 Data.removeData(e);
+                Data.showDeleteNotification();
             }
         })
     const editButtons = document.querySelectorAll('.btn-info');
@@ -112,12 +125,4 @@ document.querySelector('tbody').addEventListener('click', (e)=> {
                 Data.updateDb(e);
         }
     })
-    // const editableFields = document.querySelectorAll('.editable');
-    // editableFields.forEach((singleField) => { //tu
-    //     if(e.target == singleField) {
-    //         singleField.addEventListener('click', ()=> {
-                
-    //         })
-    //     }
-    // })
 })
